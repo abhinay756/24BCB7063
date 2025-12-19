@@ -5,9 +5,10 @@ import { TrackingData } from '../types';
 
 interface MapVisualizationProps {
   data: TrackingData;
+  translations: any;
 }
 
-const MapVisualization: React.FC<MapVisualizationProps> = ({ data }) => {
+const MapVisualization: React.FC<MapVisualizationProps> = ({ data, translations: t }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
 
@@ -26,18 +27,15 @@ const MapVisualization: React.FC<MapVisualizationProps> = ({ data }) => {
     L.control.zoom({ position: 'bottomright' }).addTo(map);
     mapRef.current = map;
 
-    const modeIconsMap = {
-      road: 'truck',
-      rail: 'train',
-    };
+    const isRail = data.transportMode === 'rail';
 
     const driverIcon = L.divIcon({
       className: 'custom-marker',
       html: `
         <div class="relative flex items-center justify-center">
           <div class="pulse-ring"></div>
-          <div class="w-10 h-10 bg-[#E31E24] rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white">
-            <i class="fa-solid fa-${modeIconsMap[data.transportMode as keyof typeof modeIconsMap] || 'location-dot'}"></i>
+          <div class="w-10 h-10 ${isRail ? 'bg-blue-600' : 'bg-[#E31E24]'} rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white">
+            <i class="fa-solid fa-${isRail ? 'train' : 'truck'}"></i>
           </div>
         </div>
       `,
@@ -57,18 +55,32 @@ const MapVisualization: React.FC<MapVisualizationProps> = ({ data }) => {
     });
 
     data.route.forEach(segment => {
-      let color = '#E31E24'; // India Post Red
-      if (segment.trafficDensity === 'moderate') color = '#f59e0b';
-      if (segment.trafficDensity === 'heavy') color = '#ef4444';
+      if (isRail) {
+        // Railway track style: Dashed black and white
+        L.polyline(segment.points as [number, number][], {
+          color: '#334155',
+          weight: 7,
+          opacity: 0.9,
+        }).addTo(map);
+        L.polyline(segment.points as [number, number][], {
+          color: '#ffffff',
+          weight: 4,
+          opacity: 1,
+          dashArray: '10, 10'
+        }).addTo(map);
+      } else {
+        let color = '#E31E24'; 
+        if (segment.trafficDensity === 'moderate') color = '#f59e0b';
+        if (segment.trafficDensity === 'heavy') color = '#ef4444';
 
-      L.polyline(segment.points as [number, number][], {
-        color: color,
-        weight: 6,
-        opacity: 0.8,
-        lineCap: 'round',
-        lineJoin: 'round',
-        dashArray: data.transportMode === 'rail' ? '1, 10' : undefined // Rail road visual
-      }).addTo(map);
+        L.polyline(segment.points as [number, number][], {
+          color: color,
+          weight: 6,
+          opacity: 0.8,
+          lineCap: 'round',
+          lineJoin: 'round'
+        }).addTo(map);
+      }
     });
 
     const driverMarker = L.marker([data.currentLocation.lat, data.currentLocation.lng], { icon: driverIcon }).addTo(map);
@@ -94,7 +106,9 @@ const MapVisualization: React.FC<MapVisualizationProps> = ({ data }) => {
              <img src={`https://api.dicebear.com/7.x/initials/svg?seed=${data.driver.name}`} alt="Agent" />
           </div>
           <div>
-            <div className="text-[9px] font-black text-[#E31E24] uppercase tracking-widest">Courier In-Charge</div>
+            <div className={`text-[9px] font-black ${data.transportMode === 'rail' ? 'text-blue-600' : 'text-[#E31E24]'} uppercase tracking-widest`}>
+              {data.transportMode === 'rail' ? 'Loco Pilot' : t.courierInCharge}
+            </div>
             <div className="text-xs font-bold text-gray-800">{data.driver.name}</div>
             <div className="flex items-center text-[9px] text-gray-500 font-bold">
               ID: {data.driver.phone.slice(-6)} • {data.driver.vehicle}
@@ -103,19 +117,27 @@ const MapVisualization: React.FC<MapVisualizationProps> = ({ data }) => {
         </div>
       </div>
 
-      <div className="absolute bottom-4 left-4 z-[1000] pointer-events-none">
-        <div className="bg-white/95 p-3 rounded shadow-md border border-gray-200 pointer-events-auto w-[200px]">
-           <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Carrier Feed</div>
-           <div className="flex items-end space-x-2">
-              <div className="text-2xl font-black text-gray-900 tracking-tighter">
-                {data.driver.speed}
-              </div>
-           </div>
-           <p className="text-[9px] text-gray-500 mt-1 font-medium italic">
-             Tracking via National Transit Grid
-           </p>
+      {data.groundingSources && data.groundingSources.length > 0 && (
+        <div className="absolute top-4 right-4 z-[1000] pointer-events-auto">
+          <div className="bg-white/95 p-2 rounded shadow-md border border-gray-200 flex flex-col space-y-1">
+            <span className="text-[8px] font-black text-gray-400 uppercase">Verified Sources</span>
+            {data.groundingSources.map((source, i) => (
+              <a 
+                key={i} 
+                href={source.uri} 
+                target="_blank" 
+                rel="noreferrer" 
+                className="text-[9px] text-blue-600 hover:underline flex items-center font-bold"
+              >
+                <i className="fa-solid fa-map-location-dot mr-1"></i>
+                {source.title.length > 15 ? source.title.slice(0, 15) + '...' : source.title}
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Speed overlay removed as per user request */}
     </div>
   );
 };

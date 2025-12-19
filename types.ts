@@ -1,15 +1,17 @@
-
 export type TransportMode = 'road' | 'rail';
 
 export interface OrderInput {
-  trackingId: string; // Generic ID for Vehicle/Flight/Container/Order
   transportMode: TransportMode;
   phoneNumber: string;
-  address: string;
   userOrderId: string;
-  state: string;
-  district: string;
-  pincode: string;
+  // Origin
+  originState: string;
+  originCity: string;
+  originPincode: string;
+  // Destination
+  destState: string;
+  destCity: string;
+  destPincode: string;
 }
 
 export interface TrackingStep {
@@ -34,6 +36,7 @@ export interface TrackingData {
   orderId: string;
   productName: string;
   transportMode: TransportMode;
+  distanceKm: number;
   currentLocation: {
     lat: number;
     lng: number;
