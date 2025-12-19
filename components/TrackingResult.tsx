@@ -17,24 +17,6 @@ const TrackingResult: React.FC<TrackingResultProps> = ({ data, translations: t }
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      {/* Model Training Indicator */}
-      <div className="bg-slate-900 text-white px-4 py-2 rounded-lg flex items-center justify-between shadow-lg overflow-hidden relative">
-        <div className="flex items-center space-x-3 z-10">
-          <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/30">
-            <i className="fa-solid fa-microchip text-blue-400 animate-pulse"></i>
-          </div>
-          <div>
-            <div className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em]">Neural Engine v4.2</div>
-            <div className="text-xs font-bold">Historical State-Timing Dataset Ingested (Kaggle Mode)</div>
-          </div>
-        </div>
-        <div className="hidden md:flex flex-col items-end z-10">
-          <div className="text-[10px] font-bold text-slate-400 uppercase">Training Loss</div>
-          <div className="text-xs font-mono font-bold text-emerald-400">0.0234σ</div>
-        </div>
-        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-blue-600/10 to-transparent pointer-events-none"></div>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Dynamic Status Card based on transport mode */}
         <div className={`bg-white p-5 rounded-lg border-l-4 ${isRail ? 'border-blue-600' : 'border-[#E31E24]'} shadow-sm flex flex-col justify-center`}>

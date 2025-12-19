@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import TrackingForm from './components/TrackingForm';
 import TrackingResult from './components/TrackingResult';
@@ -113,7 +112,7 @@ const translations = {
     courierInCharge: "कूरियर प्रभारी",
     carrierFeed: "कैरियर फीड",
     transitGridNotice: "राष्ट्रीय पारगमन ग्रिड के माध्यम से ट्रैकिंग",
-    agent: "एजेंट",
+    agent: "agent",
     // Help
     helpTitle: "रसद सहायक",
     helpDesc: "आज मैं आपकी खेप में आपकी क्या सहायता कर सकता हूँ?",
@@ -168,7 +167,7 @@ const translations = {
     courierInCharge: "కొరియర్ ఇన్‌చార్జ్",
     carrierFeed: "క్యారియర్ ఫీడ్",
     transitGridNotice: "నేషనల్ ట్రాన్సిట్ గ్రిడ్ ద్వారా ట్రాకింగ్",
-    agent: "ఏజెంట్",
+    agent: "agent",
     // Help
     helpTitle: "లాజిస్టిక్స్ అసిస్టెంట్",
     helpDesc: "ఈరోజు మీ రవాణాకు సంబంధించి నేను మీకు ఎలా సహాయపడగలను?",
@@ -267,12 +266,19 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#f4f6f8]">
-      {/* Top Gov Banner */}
-      <div className="gov-banner py-1 px-4">
+      {/* Top Gov Banner with National Emblem */}
+      <div className="gov-banner py-2 px-4 shadow-sm relative z-50">
         <div className="max-w-7xl mx-auto flex justify-between items-center text-[10px] md:text-xs font-medium text-gray-600">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <span>{t.bharatSarkar} | {t.govOfIndia}</span>
+          <div className="flex items-center space-x-3">
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/200px-Emblem_of_India.svg.png" 
+              alt="National Emblem of India" 
+              className="h-8 md:h-10 w-auto object-contain"
+            />
+            <div className="flex flex-col md:flex-row md:items-center md:space-x-2">
+              <span className="font-bold text-gray-800">{t.bharatSarkar}</span>
+              <span className="hidden md:inline text-gray-300">|</span>
+              <span className="uppercase text-gray-500 font-semibold">{t.govOfIndia}</span>
             </div>
           </div>
           <div className="flex items-center space-x-4">
@@ -293,7 +299,7 @@ const App: React.FC = () => {
               >తె (తెలుగు)</button>
             </div>
             <div className="border-l border-gray-300 h-3 mx-2"></div>
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-1 cursor-pointer hover:text-red-600 transition-colors">
               <i className="fa-solid fa-user-circle text-gray-400"></i>
               <span>{t.login}</span>
             </div>
@@ -305,13 +311,26 @@ const App: React.FC = () => {
       <header className="bg-white border-b-4 border-[#E31E24] py-4 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center cursor-pointer shrink-0" onClick={resetTracking}>
-            <div className="flex items-center space-x-2 md:space-x-3">
-              <div className="w-[45px] h-[60px] bg-[url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/India_Post_Logo.svg/1200px-India_Post_Logo.svg.png')] bg-contain bg-no-repeat bg-center"></div>
-              <div className="flex flex-col border-l-2 border-[#E31E24] pl-2 md:pl-3">
-                <span className="text-xl md:text-2xl font-black text-gray-900 leading-none tracking-tighter italic">INDIA POST</span>
-                <span className="text-[8px] md:text-[10px] font-black text-[#E31E24] leading-none uppercase tracking-[0.2em] mt-1">{t.departmentOfPosts}</span>
-              </div>
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/India_Post_Logo.svg/1200px-India_Post_Logo.svg.png" 
+              alt="India Post Logo" 
+              className="h-12 md:h-16 w-auto object-contain mr-4"
+            />
+            <div>
+              <h1 className="text-xl font-black text-gray-900 leading-none tracking-tighter italic">
+                <span className="text-[#E31E24]">INDIA</span> POST
+              </h1>
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">
+                {t.departmentOfPosts}
+              </p>
             </div>
+          </div>
+
+          <div className="hidden lg:flex flex-col items-end">
+             <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t.ministryOfComm}</div>
+             <div className="h-1 w-24 bg-red-100 mt-1 rounded-full overflow-hidden">
+                <div className="h-full bg-red-600 w-2/3"></div>
+             </div>
           </div>
 
           <div className="flex items-center space-x-4 md:space-x-8 text-xs font-bold text-gray-700 shrink-0">
