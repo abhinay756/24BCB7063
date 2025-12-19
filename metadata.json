@@ -1,0 +1,7 @@
+{
+  "name": "SwiftTrack AI - Precision Order Logistics",
+  "description": "An advanced AI-powered dashboard that predicts and visualizes the precise logistics path and real-time status of e-commerce orders using predictive analytics.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
